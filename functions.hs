@@ -1,4 +1,7 @@
 import Data.List
+import Data.Char
+import qualified Data.Map as Map
+import qualified Data.Set as Set
 doubleMe x = x + x
 --doubleUs x y = 2*x + 2*y
 doubleUs x y = doubleMe x + doubleMe y
@@ -193,3 +196,21 @@ numLongChains = length (filter isLong (map chain [1..100]))
 
 numUniques :: (Eq a) => [a] -> Int
 numUniques = length . nub
+
+encode :: Int -> String -> String
+encode shift msg =
+    let ords = map ord msg
+        shifted = map (+ shift) ords
+    in map chr shifted
+
+decode :: Int -> String -> String
+decode shift msg = encode (negate shift) msg
+
+findKey :: (Eq k) => k -> [(k,v)] -> Maybe v
+findKey key [] = Nothing
+findKey key ((k,v):xs) = if key == k
+                            then Just v
+                         else findKey key xs
+
+phoneBookToMap :: (Ord k) => [(k,String)] -> Map.Map k String
+phoneBookToMap xs = Map.fromListWith (\number1 number2 -> number1 ++ ", " ++ number2) xs
